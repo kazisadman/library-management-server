@@ -30,7 +30,9 @@ async function run() {
     );
 
     const bookCollection = client.db("booksinfodb").collection("booksinfo");
-    const catagoryCollection = client.db("booksinfodb").collection("catagoriesinfo");
+    const catagoryCollection = client
+      .db("booksinfodb")
+      .collection("catagoriesinfo");
     const borrowedCollection = client
       .db("booksinfodb")
       .collection("borrowbook");
