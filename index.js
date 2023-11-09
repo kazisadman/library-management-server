@@ -30,6 +30,7 @@ async function run() {
     );
 
     const bookCollection = client.db("booksinfodb").collection("booksinfo");
+    const catagoryCollection = client.db("booksinfodb").collection("catagoriesinfo");
     const borrowedCollection = client
       .db("booksinfodb")
       .collection("borrowbook");
@@ -42,6 +43,12 @@ async function run() {
 
     app.get("/booksinfo", async (req, res) => {
       const cursor = bookCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.get("/catagoriesinfo", async (req, res) => {
+      const cursor = catagoryCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
@@ -76,6 +83,31 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await borrowedCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    app.patch("/booksinfo/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateBook = req.body;
+      const updatedBook = {
+        $set: {
+          name: updateBook.name,
+          author: updateBook.author,
+          image: updateBook.image,
+          format: updateBook.format,
+          category: updateBook.category,
+          quantity: updateBook.quantity,
+          rating: updateBook.rating,
+          short_description: updateBook.short_description,
+        },
+      };
+      const result = await bookCollection.updateOne(
+        filter,
+        updatedBook,
+        options
+      );
       res.send(result);
     });
   } finally {
